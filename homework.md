@@ -6,4 +6,6 @@ create a server
 listen to port 7777
 write request handeler /test ,/hello
 install nodemon and updtae scripy  in package.json
-dws
+dws 
+hw
+write logic to test all method and test  postman 
