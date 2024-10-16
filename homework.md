@@ -13,3 +13,5 @@ explore routing use of ? ,+,(),* in the routes
 use of regex in routes beech me kuch bi aye  /a/ ,/.*fly$/
 read query param 
 read the dynamic route
+- l-20 hw
+1- diff beween js and json
