@@ -81,4 +81,4 @@ if(err){
 app.listen(7777,()=>{
     console.log("server is successfully listing on port 7777")
 }) //created a server 
-//nodemon install kro sudo npm i -g nodemonfbgh
+//nodemon install kro sudo npm i -g nodemonfbgh kk
