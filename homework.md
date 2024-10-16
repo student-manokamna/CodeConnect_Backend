@@ -9,3 +9,7 @@ install nodemon and updtae scripy  in package.json
 dws 
 hw
 write logic to test all method and test  postman 
+explore routing use of ? ,+,(),* in the routes
+use of regex in routes beech me kuch bi aye  /a/ ,/.*fly$/
+read query param 
+read the dynamic route
