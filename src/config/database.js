@@ -9,3 +9,4 @@ module.exports=connectDB
 // }).catch(err=>{
 // console.log("database cannot be connected")
 // })
+// mongodb+srv://namastedev:btLLL1csf55MzYTH@namastenode.7bnot.mongodb.net/
