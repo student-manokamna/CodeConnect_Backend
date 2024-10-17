@@ -4,16 +4,20 @@ const   mongoose  = require("mongoose") //npm i mongoose
 const userSchema= new mongoose.Schema({
     // here we create actual schema 
     firstName:{
-        type:String
+        type:String,
+        required:true,
     },
     lastName:{
         type:String
     },
    emailId:{
-        type:String
+        type:String,
+        required:true,
+        unique:true,
     },
     passWord:{
         type:String
+        ,required:true,
     },
     age:{
         type:Number

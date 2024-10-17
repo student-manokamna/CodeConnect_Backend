@@ -15,3 +15,7 @@ read query param
 read the dynamic route
 - l-20 hw
 1- diff beween js and json
+2-add express.json middleware
+3-make your sign up api dynamic to recieve data dynmaic
+- explore documentation of model in mongoose
+-api uppdte with emailid

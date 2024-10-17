@@ -5,7 +5,7 @@ const User=require("./models/user")
 app.use(express.json()) //handeling request and process json data  meed this mmiddleware convert into js obj
 // read json object convert into js object and add js obj to back to this req object in body so now it is js obj
 app.post("/signup",async(req,res)=>{
-    console.log(req.body) 
+    // console.log(req.body) 
     // output undefing our server is not able to read json data to read json dataw ewill need help of middleware
     // const userObj={
     //     firstName:"Manorath",
@@ -15,12 +15,7 @@ app.post("/signup",async(req,res)=>{
     // } // save this user to mogoose db for thAT CREte new instance of model
     // create new user instance
     // const user=new User(userObj)
-    const user=new User({
-        firstName:"virat",
-        lastName:"kholi",
-        emailId:"manorath@123.com",
-        passWord:"manorath123"
-    })
+    const user=new User(req.body)
     try{
         await user.save()// saved to database it retirn promise
    res.send("user added successfully")
@@ -29,6 +24,72 @@ app.post("/signup",async(req,res)=>{
         res.status(400).send("error saving the user:"+err.message)  // do error handeling
     }
    
+})
+//get user by email
+app.get("/user",async (req,res)=>{
+    const userEmail=req.body.emailId;
+    try{
+        const users=  await User.findOne({emailId:userEmail})
+        if(users.length==0){
+          res.status(404).send("user not found");
+        }
+        else{
+          res.send(users);
+        }
+        
+      }
+      catch(err){
+          res.status(400).send("something went wrong")
+      }
+    // try{
+    //   const users=  await User.find({emailId:userEmail})
+    //   if(users.length==0){
+    //     res.status(404).send("user not found");
+    //   }
+    //   else{
+    //     res.send(users);
+    //   }
+      
+    // }
+    // catch(err){
+    //     res.status(400).send("something went wrong")
+    // }
+})
+app.delete("/user",async(req,res)=>{
+    const userId=req.body.userId;
+    try{
+        const users=await User.findByIdAndDelete({_id:userId})
+    //    const users=await User.findByIdAndDelete(userId) // all db objets
+       res.send("user deleted successfully")
+    }
+    catch(err){
+       res.status(400).send("something went wrong")
+   }
+})
+app.patch("/user",async(req,res)=>{ 
+    const userId=req.body.userId
+        const data=req.body
+        // console.log(data)
+    try{
+        
+        const user=await User.findByIdAndUpdate({_id:userId},data,{
+            returnDocument:"before",
+        })
+        console.log(user)
+        res.send("user updated successfully")
+    }
+    catch(err){
+        res.status(400).send("something went wrong")
+    }
+})
+app.get("/feed",async(req,res)=>{
+     try{
+        const users=await User.find({}) // all db objets
+        res.send(users)
+     }
+     catch(err){
+        res.status(400).send("something went wrong")
+    }
 })
 connectDB().then(()=>{
     console.log("database connection successfull")
