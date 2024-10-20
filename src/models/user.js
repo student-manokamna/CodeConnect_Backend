@@ -1,5 +1,5 @@
 const   mongoose  = require("mongoose") //npm i mongoose
-
+const validator=require("validator")
 // what field our suser will have
 const userSchema= new mongoose.Schema({
     // here we create actual schema 
@@ -17,11 +17,21 @@ const userSchema= new mongoose.Schema({
         lowercase:true,
         required:true,
         unique:true, 
-        trim:true
+        trim:true,
+        validate(value){
+            if(!validator.isEmail(value)){
+                throw new Error("invalid email address: "+value); //these are the validation on schema level
+            }
+        }
     },
     passWord:{
         type:String,
         required:true,
+        validate(value){
+            if(!validator.isStrongPassword(value)){
+                throw new Error("Enter a strong password : "+value);
+            }
+        }
     },
     age:{
         type:Number,
@@ -38,7 +48,12 @@ const userSchema= new mongoose.Schema({
     },// tell what use store and what data it store
     photoUrl:{
         type:String,
-        default:"image url add kro"
+        default:"image url add kro",
+        // validate(value){
+        //     if(!validator.isURL(value)){
+        //         throw new Error("invalid photo url : "+value);
+        //     }
+        // }
     },
     about:{
         type:String,

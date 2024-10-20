@@ -19,3 +19,7 @@ read the dynamic route
 3-make your sign up api dynamic to recieve data dynmaic
 - explore documentation of model in mongoose
 -api uppdte with emailid
+-l-22
+ - vqlidate data not in schema in utils
+ -install b bcrypt lib
+ create a password hash usinf bcrypt.hash and save yser with encrypted passwword

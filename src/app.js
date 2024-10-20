@@ -2,28 +2,50 @@ const express=require('express');
 const connectDB=require("./config/database")
 const app=express() //INSANCE OF EXPRESS
 const User=require("./models/user")
+const {validateSignupData}=require("./utils/validation")
+const bcrypt=require("bcrypt")
 app.use(express.json()) //handeling request and process json data  meed this mmiddleware convert into js obj
 // read json object convert into js object and add js obj to back to this req object in body so now it is js obj
 app.post("/signup",async(req,res)=>{
-    // console.log(req.body) 
-    // output undefing our server is not able to read json data to read json dataw ewill need help of middleware
-    // const userObj={
-    //     firstName:"Manorath",
-    //     lastName:"chugh",
-    //     emailId:"manorath@123.com",
-    //     passWord:"manorath123"
-    // } // save this user to mogoose db for thAT CREte new instance of model
-    // create new user instance
-    // const user=new User(userObj)
-    const user=new User(req.body)
-    try{
+   //validaon of data
+   try{
+    validateSignupData(req)
+   //encrypt the password
+   const {firstName,lastName,emailId,passWord}=req.body
+   const passwordHash= await bcrypt.hash(passWord,10)
+   console.log(passwordHash);
+   //creating new instance of user model
+    const user=new User({
+        firstName,lastName,emailId,passWord:passwordHash,
+    })
+    
         await user.save()// saved to database it retirn promise
    res.send("user added successfully")
     }
     catch(err){
-        res.status(400).send("error saving the user:"+err.message)  // do error handeling
+        res.status(400).send("ERROr ::"+err.message)  // do error handeling
     }
    
+})
+app.post("/login",async (req,res)=>{
+    try{
+        const {emailId,passWord}=req.body;
+        // check emaolid no t random email id 
+        const user=await User.findOne({emailId:emailId})
+        if(!user){
+            throw new Error("invalid creditinal")
+        }
+        const isPassWordValid=await bcrypt.compare(passWord,user.passWord)
+        if(isPassWordValid){
+            res.send("user login successfull")
+        }
+        else{
+            throw new Error("invalid creditinal")
+        }
+    }
+    catch(err){
+        res.status(400).send("ERROr ::"+err.message)  // do error handeling
+    }
 })
 //get user by email
 app.get("/user",async (req,res)=>{
@@ -103,6 +125,7 @@ app.get("/feed",async(req,res)=>{
         res.status(400).send("something went wrong")
     }
 })
+
 connectDB().then(()=>{
     console.log("database connection successfull")
     }).catch(err=>{
