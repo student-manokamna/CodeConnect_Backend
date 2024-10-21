@@ -20,6 +20,10 @@ read the dynamic route
 - explore documentation of model in mongoose
 -api uppdte with emailid
 -l-22
+-install cookie-parser
  - vqlidate data not in schema in utils
  -install b bcrypt lib
  create a password hash usinf bcrypt.hash and save yser with encrypted passwword
+ -install jsowebtoken after email and password verification and send back to userin cookies
+  - read the cookies inside your profile and find logged in   server
+  - 
