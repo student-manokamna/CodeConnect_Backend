@@ -1,5 +1,7 @@
 const   mongoose  = require("mongoose") //npm i mongoose
 const validator=require("validator")
+const bcrypt=require("bcrypt")
+const jwt=require("jsonwebtoken")
 // what field our suser will have
 const userSchema= new mongoose.Schema({
     // here we create actual schema 
@@ -39,6 +41,10 @@ const userSchema= new mongoose.Schema({
     },
     gender:{
         type:String,
+        enum:{
+            values:["male","female","others"],
+            message:`{value} is not valid`
+        },
         validate(value){
             if(!["male","female","others"].includes(value)){
                 throw new Error("gender data is not valid")
@@ -65,5 +71,18 @@ const userSchema= new mongoose.Schema({
 },{
     timestamps:true,// by adding this it automatically added time stamps
 })
+userSchema.index({firstName:1})
+userSchema.index({gender:1})
+ userSchema.methods.getJWT= async function (){
+    const user=this
+    const token=await jwt.sign({_id:user._id},"DEV@Tinderpo7",{expiresIn:"1d"});
+    return token;
+ }
+ userSchema.methods.validatePassword=async function(passwordInputBuUser){
+    const user=this;
+    const passwordHash=user.passWord;
+    const isPassWordValid=await bcrypt.compare(passwordInputBuUser,passwordHash)
+    return isPassWordValid;
+ }
  const User=mongoose.model("User",userSchema) //first model name and second schema use capital letter in model
  module.exports=User;

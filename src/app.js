@@ -1,165 +1,103 @@
 const express=require('express');
 const connectDB=require("./config/database")
 const app=express() //INSANCE OF EXPRESS
-const User=require("./models/user")
-const {validateSignupData}=require("./utils/validation")
-const bcrypt=require("bcrypt")
+
+
+
 const cookieParser=require("cookie-parser")
 const jwt=require("jsonwebtoken")
-const {userAuth}=require("./middlewares/auth")
+
 app.use(express.json()) //handeling request and process json data  meed this mmiddleware convert into js obj
 app.use(cookieParser()) // iske bina undefined output dega
 // read json object convert into js object and add js obj to back to this req object in body so now it is js obj
-app.post("/signup",async(req,res)=>{
-   //validaon of data
-   try{
-    validateSignupData(req)
-   //encrypt the password
-   const {firstName,lastName,emailId,passWord}=req.body
-   const passwordHash= await bcrypt.hash(passWord,10)
-//    console.log(passwordHash);
-   //creating new instance of user model
-    const user=new User({
-        firstName,lastName,emailId,passWord:passwordHash,
-    })
-    
-        await user.save()// saved to database it retirn promise
-   res.send("user added successfully")
-    }
-    catch(err){
-        res.status(400).send("ERROr ::"+err.message)  // do error handeling
-    }
-   
-})
-app.post("/login",async (req,res)=>{
-    try{
-        const {emailId,passWord}=req.body;
-        // check emaolid no t random email id 
-        const user=await User.findOne({emailId:emailId})
-        if(!user){
-            throw new Error("invalid creditinal")
-        }
-        const isPassWordValid=await bcrypt.compare(passWord,user.passWord)
-        if(isPassWordValid){
-            //create ajwt token
-            const token=await jwt.sign({_id:user._id},"DEV@Tinderpo7"); //hiding the user id and second arhument secret key only known by server 
-            // console.log(token)
-            //add token to cokkies and asend response back gto user kind of temop password which will come in all the request
-            res.cookie("token",token)
-            res.send("user login successfull")
-        }
-        else{
-            throw new Error("invalid creditinal")
-        }
-    }
-    catch(err){
-        res.status(400).send("ERROr ::"+err.message)  // do error handeling
-    }
-})
-app.get("/profile",userAuth,async (req,res)=>{
-    try{
-    //     const cookies=req.cookies;
-    // //extract token from cookie
-    // const {token}=cookies;
-    // if(!token){
-    //     throw new Error("invalid token")
-    // }
-    //validarte token
-    // const decodedMessage=await  jwt.verify(token,"DEV@Tinderpo7")
-    // console.log(decodedMessage)
-    // const {_id}=decodedMessage;
-    // console.log("logged in user is: "+ _id)
-    // console.log(cookies) //cookies==token  
-    // const user= await User.findById(_id) already checked in auth middle ware wheter user exist or not
-    const user= req.user;
 
-    if(!user){
-        throw new Error("user does not exist")
-    }
-    res.send(user); // profile vale me iska result aa jayega
-    }
-    catch(err){
-        res.status(400).send("ERROr ::"+err.message)  // do error handeling
-    }
-})
+
+const authRouter=require("./routes/auth")
+const profileRouter=require("./routes/profile")
+const requestRouter=require("./routes/request")
+
+app.use("/",authRouter);
+app.use("/",profileRouter);
+app.use("/",requestRouter);
+
 //get user by email
-app.get("/user",async (req,res)=>{
-    const userEmail=req.body.emailId;
-    try{
-        const users=  await User.findOne({emailId:userEmail})
-        if(users.length==0){
-          res.status(404).send("user not found");
-        }
-        else{
-          res.send(users);
-        }
+// app.get("/user",async (req,res)=>{
+//     const userEmail=req.body.emailId;
+//     try{
+//         const users=  await User.findOne({emailId:userEmail})
+//         if(users.length==0){
+//           res.status(404).send("user not found");
+//         }
+//         else{
+//           res.send(users);
+//         }
         
-      }
-      catch(err){
-          res.status(400).send("something went wrong")
-      }
-    // try{
-    //   const users=  await User.find({emailId:userEmail})
-    //   if(users.length==0){
-    //     res.status(404).send("user not found");
-    //   }
-    //   else{
-    //     res.send(users);
-    //   }
+//       }
+//       catch(err){
+//           res.status(400).send("something went wrong")
+//       }
+//     // try{
+//     //   const users=  await User.find({emailId:userEmail})
+//     //   if(users.length==0){
+//     //     res.status(404).send("user not found");
+//     //   }
+//     //   else{
+//     //     res.send(users);
+//     //   }
       
-    // }
-    // catch(err){
-    //     res.status(400).send("something went wrong")
-    // }
-})
-app.delete("/user",async(req,res)=>{
-    const userId=req.body.userId;
-    try{
-        const users=await User.findByIdAndDelete({_id:userId})
-    //    const users=await User.findByIdAndDelete(userId) // all db objets
-       res.send("user deleted successfully")
-    }
-    catch(err){
-       res.status(400).send("something went wrong")
-   }
-})
-app.patch("/user/:userId",async(req,res)=>{ 
-    // const userId=req.body.userId  ab body se nhi param url se lenge userid kyonki update nhi kr skte user id
-    const userId=req.params?.userId  
-        const data=req.body
+//     // }
+//     // catch(err){
+//     //     res.status(400).send("something went wrong")
+//     // }
+// })
+// app.delete("/user",async(req,res)=>{
+//     const userId=req.body.userId;
+//     try{
+//         const users=await User.findByIdAndDelete({_id:userId})
+//     //    const users=await User.findByIdAndDelete(userId) // all db objets
+//        res.send("user deleted successfully")
+//     }
+//     catch(err){
+//        res.status(400).send("something went wrong")
+//    }
+// })
+// app.patch("/user/:userId",async(req,res)=>{ 
+//     // const userId=req.body.userId  ab body se nhi param url se lenge userid kyonki update nhi kr skte user id
+//     const userId=req.params?.userId  
+//         const data=req.body
      
-        // console.log(data)
-    try{
-        const ALLOWED_UPDATES=["photoUrl","about","gender","age","skills"]
-        const isallowedupdates=Object.keys(data).every(k=>
-            ALLOWED_UPDATES.includes(k)
-        )
-        if(!isallowedupdates){
-           throw new Error("update not allowed")
-        }
-        if(data?.skills.length>10){
-            throw new Error("Skills can not be more then 10")
-        }
-        const user=await User.findByIdAndUpdate({_id:userId},data,{
-            returnDocument:"after",
-            runValidators:true
-        })
-        console.log(user)
-        res.send("user updated successfully")
-    }
-    catch(err){
-        res.status(400).send("update failed"+err.message)
-    }
-})
-app.get("/feed",async(req,res)=>{
-     try{
-        const users=await User.find({}) // all db objets
-        res.send(users)
-     }
-     catch(err){
-        res.status(400).send("something went wrong")
-    }
-})
+//         // console.log(data)
+//     try{
+//         const ALLOWED_UPDATES=["photoUrl","about","gender","age","skills"]
+//         const isallowedupdates=Object.keys(data).every(k=>
+//             ALLOWED_UPDATES.includes(k)
+//         )
+//         if(!isallowedupdates){
+//            throw new Error("update not allowed")
+//         }
+//         if(data?.skills.length>10){
+//             throw new Error("Skills can not be more then 10")
+//         }
+//         const user=await User.findByIdAndUpdate({_id:userId},data,{
+//             returnDocument:"after",
+//             runValidators:true
+//         })
+//         console.log(user)
+//         res.send("user updated successfully")
+//     }
+//     catch(err){
+//         res.status(400).send("update failed"+err.message)
+//     }
+// })
+// app.get("/feed",async(req,res)=>{
+//      try{
+//         const users=await User.find({}) // all db objets
+//         res.send(users)
+//      }
+//      catch(err){
+//         res.status(400).send("something went wrong")
+//     }
+// })
 
 connectDB().then(()=>{
     console.log("database connection successfull")
