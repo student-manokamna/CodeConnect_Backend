@@ -43,4 +43,37 @@ requestRouter.post("/request/send/:status/:toUserId",userAuth,async(req,res)=>{ 
     res.status(400).send("ERROr ::"+err.message)  // do error handeling
 }
 })
+requestRouter.post("/request/review/:status/:requestId",userAuth,async (req,res)=>{
+    try{
+            const loggedInUser=req.user;
+            const {status,requestId}=req.params;
+            //validate the status
+        const allowedStatus=["accepted","rejected"];
+        if(!allowedStatus.includes(status)){
+            return res.status(400).json({
+                message:"Status not allowed!! "
+            })
+        }
+
+            const connectionRequest=await ConnectionRequest.findOne({ //connection vale collection/table me dekkgna ye
+                _id:requestId, //jisne rquest beji hh
+                toUserId:loggedInUser._id,//meri id jise beji hh
+                status:"interested"
+
+            })
+            if(!connectionRequest){
+                return res.status(400).json({message:"connection request not found"})
+            }
+            connectionRequest.status=status
+            const data=await connectionRequest.save();
+            res.json({message:"connection requested "+status, data})
+            //manorath=>elon
+            // jo loggedInId equal to touserID jise beja hh
+            // sattus intresred hona chyie
+            // request id should be valid not random
+    }
+    catch(err){
+        res.status(400).send("ERROr ::"+err.message)  // do error handeling
+    }
+})
 module.exports=requestRouter

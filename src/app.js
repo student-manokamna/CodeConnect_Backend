@@ -7,7 +7,8 @@ const app=express() //INSANCE OF EXPRESS
 const cookieParser=require("cookie-parser")
 const jwt=require("jsonwebtoken")
 
-app.use(express.json()) //handeling request and process json data  meed this mmiddleware convert into js obj
+app.use(express.json())  //middleware given by react to convert json data into js obj
+//handeling request and process json data  meed this mmiddleware convert into js obj redable stream ko js obj me convert krta hai
 app.use(cookieParser()) // iske bina undefined output dega
 // read json object convert into js object and add js obj to back to this req object in body so now it is js obj
 
@@ -15,11 +16,11 @@ app.use(cookieParser()) // iske bina undefined output dega
 const authRouter=require("./routes/auth")
 const profileRouter=require("./routes/profile")
 const requestRouter=require("./routes/request")
-
+const userRouter=require("./routes/user")
 app.use("/",authRouter);
 app.use("/",profileRouter);
 app.use("/",requestRouter);
-
+app.use("/",userRouter);
 //get user by email
 // app.get("/user",async (req,res)=>{
 //     const userEmail=req.body.emailId;

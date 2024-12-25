@@ -21,6 +21,6 @@ now i recieve reuest wheter to accept or reject
 
 userRouter
  - Get user/connection
- - Get/requests/recieved
+ - Get user/requests/recieved
  - GET user /feed- get profile of other user on platform 
 status: ignore ,intrsted,accepted,rejected

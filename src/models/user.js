@@ -84,5 +84,8 @@ userSchema.index({gender:1})
     const isPassWordValid=await bcrypt.compare(passwordInputBuUser,passwordHash)
     return isPassWordValid;
  }
+ 
  const User=mongoose.model("User",userSchema) //first model name and second schema use capital letter in model
+ console.log(typeof User)
+ console.dir(User)
  module.exports=User;

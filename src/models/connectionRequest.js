@@ -2,10 +2,12 @@ const mongoose=require("mongoose");
 const connectionRequestSchema= new mongoose.Schema({
     fromUserId:{
         type:mongoose.Schema.Types.ObjectId,
+        ref:"User",// referncd to user collection or table link between two table
         required:true,
     },
     toUserId:{
         type:mongoose.Schema.Types.ObjectId ,
+        ref:"User",
         required:true,
     },
     status:{
