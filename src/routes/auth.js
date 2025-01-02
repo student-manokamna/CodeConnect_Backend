@@ -50,7 +50,7 @@ authRouter.post("/signup",async(req,res)=>{
         else{
             throw new Error("invalid creditinal")
         }
-    }
+    } 
     catch(err){
         res.status(400).send("ERROr ::"+err.message)  // do error handeling
     }

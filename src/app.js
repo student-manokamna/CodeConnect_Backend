@@ -81,7 +81,7 @@ app.use("/",userRouter);
 //         }
 //         const user=await User.findByIdAndUpdate({_id:userId},data,{
 //             returnDocument:"after",
-//             runValidators:true
+//             runValidators:true //run after every time update IF NOT THIS THEN VALIDATION WILL RUN ONLY AT TIME OF CREATION
 //         })
 //         console.log(user)
 //         res.send("user updated successfully")
