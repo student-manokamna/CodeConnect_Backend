@@ -7,17 +7,21 @@ const authRouter=express.Router();
 authRouter.post("/signup",async(req,res)=>{
     //validaon of data 
     try{
+        console.log("hi")
      validateSignupData(req)
     //encrypt the password
+    console.log('1')
     const {firstName,lastName,emailId,passWord}=req.body
     const passwordHash= await bcrypt.hash(passWord,10)
  //    console.log(passwordHash);
     //creating new instance of user model
+    console.log('2')
      const user=new User({
          firstName,lastName,emailId,passWord:passwordHash,
      })
-     
+     console.log('3')
          await user.save()// saved to database it retirn promise
+         console.log('4')
     res.send("user added successfully")
      }
      catch(err){
@@ -45,7 +49,7 @@ authRouter.post("/signup",async(req,res)=>{
             res.cookie("token",token,{
                 expires:new Date(Date.now()+8*3600000)
             })
-            res.send("user login successfull")
+            res.send(user)
         }
         else{
             throw new Error("invalid creditinal")

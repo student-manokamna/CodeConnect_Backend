@@ -39,7 +39,8 @@ profileRouter.patch("/profile/edit",userAuth, async (req,res)=>{
         // loggedInUser.firstName=req.body.firstName same as down
         Object.keys(req.body).forEach((key)=>(loggedInUser[key]=req.body[key]))
         
-        console.log(loggedInUser)
+        // console.log(loggedInUser)
+        
         await loggedInUser.save()
         res.json({message:`${loggedInUser.firstName} profile updates successfull!!`,data:loggedInUser,})
     }
@@ -47,6 +48,7 @@ profileRouter.patch("/profile/edit",userAuth, async (req,res)=>{
         res.status(400).send("ERROr ::"+err.message)  // do error handeling
     }
 })
+
 profileRouter.patch("/profile/password",userAuth,async (req,res)=>{
     
     try{
@@ -65,11 +67,13 @@ profileRouter.patch("/profile/password",userAuth,async (req,res)=>{
     const newpasswordHash= await bcrypt.hash(newPassword,10);
     loggedInUser.passWord=newpasswordHash
     await loggedInUser.save();
-    console.log(newpasswordHash)
-    console.log(newPassword)
+    // console.log(newpasswordHash)
+    // console.log(newPassword)
     res.status(200).send("Password updated successfully.");
+
 }
 catch(err){
+    
     res.status(400).send("ERROr ::"+err.message)  // do error handeling
 }
 })

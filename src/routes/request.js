@@ -11,7 +11,7 @@ requestRouter.post("/request/send/:status/:toUserId",userAuth,async(req,res)=>{ 
     const allowedStatus=["interested","ignore"]
     if(!allowedStatus.includes(status)){
         return res.status(400).json({message:"invalid status type "+status})
-    }
+    }   
 
     const toUser=await User.findById(toUserId)
     if(!toUser){
@@ -56,7 +56,7 @@ requestRouter.post("/request/review/:status/:requestId",userAuth,async (req,res)
         }
 
             const connectionRequest=await ConnectionRequest.findOne({ //connection vale collection/table me dekkgna ye
-                _id:requestId, //jisne rquest beji hh
+                fromUserId:requestId, //jisne rquest beji hh
                 toUserId:loggedInUser._id,//meri id jise beji hh
                 status:"interested"
 
